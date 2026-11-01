@@ -1,1 +1,230 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Personal</title>
+<style>
+body{background:#0f172a;color:#f8fafc;font-family:system-ui,sans-serif;margin:0;padding:14px;}
+.box{max-width:540px;margin:0 auto;}
+h1{font-size:1.3rem;text-align:center;margin-bottom:14px;}
+h2{font-size:0.95rem;color:#38bdf8;border-bottom:1px solid #334155;padding-bottom:3px;margin:16px 0 8px;}
+.card{background:#1e293b;border:1px solid #334155;border-radius:6px;padding:10px;margin-bottom:8px;}
+.btn{display:flex;justify-content:space-between;align-items:center;background:#1e293b;color:#f8fafc;text-decoration:none;padding:9px 12px;border-radius:6px;border:1px solid #334155;font-size:0.85rem;margin-bottom:6px;}
+.tag{font-size:0.75rem;background:#38bdf826;color:#38bdf8;padding:2px 6px;border-radius:4px;}
+.tit{font-size:0.85rem;font-weight:bold;color:#38bdf8;margin-bottom:4px;}
+.sub{font-size:0.7rem;color:#94a3b8;margin:6px 0 2px;text-transform:uppercase;}
+.grid-d{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;}
+.grid-h{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;}
+.c-item{background:#0f172a80;border:1px solid #334155;border-radius:4px;padding:5px 2px;text-align:center;font-size:0.7rem;}
+.bus-list{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0;}
+.bus-item{background:#0f172a80;border:1px solid #334155;border-radius:4px;padding:4px 8px;font-size:0.75rem;font-weight:bold;}
+.bus-item.sig{border-color:#38bdf8;color:#38bdf8;}
+.badge{padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:bold;}
+.badge.mañana{background:#0284c7;color:#fff;}
+.badge.tarde{background:#d97706;color:#fff;}
+.badge.noche{background:#7c3aed;color:#fff;}
+.badge.noche-finde{background:#4c1d95;color:#e9d5ff;border:1px solid #a855f7;}
+.badge.libre{background:#334155;color:#94a3b8;}
+.fila-d{display:flex;justify-content:space-between;align-items:center;background:#1e293b;border:1px solid #334155;padding:7px 10px;border-radius:6px;font-size:0.85rem;margin-bottom:5px;}
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>Panel de Control</h1>
+
+  <h2>Mis Enlaces</h2>
+  <a class="btn" href="https://www.fgc.cat/" target="_blank"><span>Ir al trabajo</span><span class="tag">Sant Josep → Fira</span></a>
+  <a class="btn" href="https://www.fgc.cat/" target="_blank"><span>Vuelta trabajo</span><span class="tag">Fira → Sant Josep</span></a>
+  <a class="btn" href="https://maps.app.goo.gl/AhRfHtg9DHJv5CPu5" target="_blank"><span>Vuelta metro</span><span class="tag">Google Maps</span></a>
+
+  <h2>Autobuses Lurraldebus (Línea DO050)</h2>
+  
+  <!-- Ida: Aeropuerto -> San Sebastián -->
+  <div class="card">
+    <div class="tit" style="display:flex;justify-content:space-between;">
+      <span>Aeropuerto BIO → San Sebastián</span><span class="tag">Directo ~75m</span>
+    </div>
+    <div style="font-size:0.75rem;color:#94a3b8;">Salidas cada hora (a y 45):</div>
+    <div class="bus-list" id="bus-ida">
+      <div class="bus-item sig">Próx: 07:45 h</div>
+      <div class="bus-item">08:45 h</div>
+      <div class="bus-item">09:45 h</div>
+    </div>
+    <div style="text-align:right;"><a href="https://www.pesa.net/" target="_blank" style="color:#38bdf8;font-size:0.75rem;text-decoration:none;">Web oficial / billetes →</a></div>
+  </div>
+
+  <!-- Vuelta: San Sebastián -> Aeropuerto -->
+  <div class="card">
+    <div class="tit" style="display:flex;justify-content:space-between;">
+      <span>San Sebastián → Aeropuerto BIO</span><span class="tag">Directo ~75m</span>
+    </div>
+    <div style="font-size:0.75rem;color:#94a3b8;">Salidas cada hora (en punto):</div>
+    <div class="bus-list" id="bus-vuelta">
+      <div class="bus-item sig">Próx: 05:00 h</div>
+      <div class="bus-item">06:00 h</div>
+      <div class="bus-item">07:00 h</div>
+    </div>
+    <div style="text-align:right;"><a href="https://www.pesa.net/" target="_blank" style="color:#38bdf8;font-size:0.75rem;text-decoration:none;">Web oficial / billetes →</a></div>
+  </div>
+
+  <h2>Previsión Aeropuertos</h2>
+  <!-- Bilbao -->
+  <div class="card">
+    <div class="tit">Aeropuerto de Bilbao (BIO)</div>
+    <div class="sub">Próximos Días</div>
+    <div class="grid-d" id="prev-bio">
+      <div class="c-item">Hoy<br><b>--°</b></div>
+      <div class="c-item">Mañana<br><b>--°</b></div>
+      <div class="c-item">Día 3<br><b>--°</b></div>
+      <div class="c-item">Día 4<br><b>--°</b></div>
+    </div>
+    <div class="sub">Próximas 6 Horas</div>
+    <div class="grid-h" id="horas-bio">
+      <div class="c-item">+1h</div><div class="c-item">+2h</div><div class="c-item">+3h</div>
+      <div class="c-item">+4h</div><div class="c-item">+5h</div><div class="c-item">+6h</div>
+    </div>
+  </div>
+
+  <!-- Barcelona -->
+  <div class="card">
+    <div class="tit">Aeropuerto de Barcelona (BCN)</div>
+    <div class="sub">Próximos Días</div>
+    <div class="grid-d" id="prev-bcn">
+      <div class="c-item">Hoy<br><b>--°</b></div>
+      <div class="c-item">Mañana<br><b>--°</b></div>
+      <div class="c-item">Día 3<br><b>--°</b></div>
+      <div class="c-item">Día 4<br><b>--°</b></div>
+    </div>
+    <div class="sub">Próximas 6 Horas</div>
+    <div class="grid-h" id="horas-bcn">
+      <div class="c-item">+1h</div><div class="c-item">+2h</div><div class="c-item">+3h</div>
+      <div class="c-item">+4h</div><div class="c-item">+5h</div><div class="c-item">+6h</div>
+    </div>
+  </div>
+
+  <h2>Horario Laboral - Equipo E11</h2>
+  <div class="card" style="border-color:#38bdf8;text-align:center;">
+    <div style="font-size:0.7rem;color:#94a3b8;">TURNO DE HOY</div>
+    <div style="font-size:1.1rem;font-weight:bold;margin-top:3px;" id="turno-hoy">
+      <span class="badge libre">L</span> Libre / Descanso
+    </div>
+  </div>
+  <div id="lista-proximos">
+    <div class="fila-d"><span>Siguientes días</span><span class="badge libre">Sincronizando...</span></div>
+  </div>
+</div>
+
+<script>
+// 1. Buses (Ida y Vuelta DO050)
+function actBus(){
+  const hIda=["07:45","08:45","09:45","10:45","11:45","12:45","13:45","14:45","15:45","16:45","17:45","18:45","19:45","20:45","21:45","22:45","23:45"];
+  const hVta=["05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00"];
+  
+  const d=new Date(),act=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+
+  function render(lista,id,primerTxt){
+    const s=lista.filter(x=>x>=act).slice(0,3),el=document.getElementById(id);
+    if(el){
+      if(s.length) el.innerHTML=s.map((x,i)=>`<div class="bus-item ${i===0?'sig':''}">${i===0?'Próx: ':''}${x} h</div>`).join('');
+      else el.innerHTML=`<span style="font-size:0.75rem;color:#94a3b8;">Finalizado por hoy. Mañana a las ${primerTxt}</span>`;
+    }
+  }
+
+  render(hIda,'bus-ida','07:45 h');
+  render(hVta,'bus-vuelta','05:00 h');
+}
+
+// 2. Clima
+const WMO={0:'Desp.',1:'Nub.',2:'Nub.',3:'Cub.',45:'Niebla',51:'Llov.',61:'Lluvia',80:'Chub.',95:'Torm.'};
+const DIAS=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+
+async function actClima(){
+  const p=[{d:'prev-bio',h:'horas-bio',lat:43.3011,lon:-2.9106},{d:'prev-bcn',h:'horas-bcn',lat:41.2974,lon:2.0833}];
+  for(const x of p){
+    try{
+      const res=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${x.lat}&longitude=${x.lon}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum&hourly=temperature_2m,weather_code,precipitation&forecast_days=4&timezone=auto`);
+      if(!res.ok) continue;
+      const data=await res.json();
+      const elD=document.getElementById(x.d);
+      if(elD&&data.daily){
+        elD.innerHTML=data.daily.time.map((f,i)=>`
+          <div class="c-item">
+            <div style="color:#94a3b8;font-weight:bold;">${i===0?'Hoy':DIAS[new Date(f+'T00:00:00').getDay()]}</div>
+            <div style="font-size:0.65rem;">${WMO[data.daily.weather_code[i]]||'Var.'}</div>
+            <div><b>${Math.round(data.daily.temperature_2m_max[i])}°</b> <span style="color:#94a3b8;font-size:0.65rem;">${Math.round(data.daily.temperature_2m_min[i])}°</span></div>
+            <div style="color:#38bdf8;font-size:0.65rem;">💧${data.daily.precipitation_sum[i]}m</div>
+          </div>
+        `).join('');
+      }
+      const elH=document.getElementById(x.h);
+      if(elH&&data.hourly){
+        const now=new Date();
+        let idx=data.hourly.time.findIndex(t=>new Date(t)>=now);
+        if(idx===-1) idx=0;
+        let str='';
+        for(let i=idx;i<idx+6&&i<data.hourly.time.length;i++){
+          str+=`
+            <div class="c-item">
+              <div style="color:#94a3b8;font-weight:bold;">${data.hourly.time[i].substring(11,16)}</div>
+              <div><b>${Math.round(data.hourly.temperature_2m[i])}°</b></div>
+              <div style="color:#38bdf8;font-size:0.65rem;">${data.hourly.precipitation[i]>0?data.hourly.precipitation[i]+'m':'0m'}</div>
+            </div>
+          `;
+        }
+        elH.innerHTML=str;
+      }
+    }catch(e){}
+  }
+}
+
+// 3. Turnos
+const TURNOS={'M':{desc:'Mañana (06:00-14:00)',tipo:'mañana'},'T':{desc:'Tarde (14:00-22:00)',tipo:'tarde'},'Nn':{desc:'Noche (22:00-06:00)',tipo:'noche'},'Nnw':{desc:'Noche Finde',tipo:'noche-finde'}};
+
+async function actTurnos(){
+  try{
+    const res=await fetch('https://docs.google.com/spreadsheets/d/1LGStlL5X0kGPmwmVnB1OmcQdWe6uzrYUfzk54t-QZ28/export?format=csv');
+    if(!res.ok) return;
+    const txt=await res.text();
+    const rows=txt.trim().split('\n').slice(1);
+    const lista=rows.map(r=>{
+      const c=r.split(',').map(x=>x.replace(/^"|"$/g,'').trim());
+      const f=c[0];
+      if(!f) return null;
+      const p=f.split('/');
+      if(p.length!==3) return null;
+      const cod=c[2]||'';
+      const inf=TURNOS[cod]||{desc:'Libre / Descanso',tipo:'libre'};
+      return {iso:`${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`,vis:f,dia:c[1]||'',cod:cod||'L',desc:inf.desc,tipo:inf.tipo};
+    }).filter(Boolean);
+
+    const hoy=new Date().toLocaleDateString('en-CA');
+    const tHoy=lista.find(t=>t.iso===hoy);
+    const elHoy=document.getElementById('turno-hoy');
+    if(elHoy&&tHoy) elHoy.innerHTML=`<span class="badge ${tHoy.tipo}">${tHoy.cod}</span> ${tHoy.desc}`;
+
+    const prox=lista.filter(t=>t.iso>hoy).slice(0,5);
+    const elProx=document.getElementById('lista-proximos');
+    if(elProx&&prox.length){
+      elProx.innerHTML=prox.map(t=>`
+        <div class="fila-d">
+          <span>${t.dia} ${t.vis}</span>
+          <div>
+            <span style="font-size:0.75rem;color:#94a3b8;margin-right:4px;">${t.desc}</span>
+            <span class="badge ${t.tipo}">${t.cod}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+  }catch(e){}
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  actBus();
+  actClima();
+  actTurnos();
+});
+</script>
+</body>
+</html>
