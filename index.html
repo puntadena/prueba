@@ -33,13 +33,13 @@ h2{font-size:0.95rem;color:#38bdf8;border-bottom:1px solid #334155;padding-botto
 <div class="box">
   <h1>Panel de viaje</h1>
 
-  <!-- 1. Enlaces FGC y Metro -->
+  <!-- 1. Enlaces -->
   <h2>Mis Enlaces</h2>
   <a class="btn" href="https://www.fgc.cat/es/buscador/?from_address=Sant+Josep&amp;from_code=SP&amp;to_address=Europa+%7C+Fira&amp;to_code=EU" target="_blank"><span>Ir al trabajo</span><span class="tag">Sant Josep → Fira</span></a>
   <a class="btn" href="https://www.fgc.cat/es/buscador/?from_address=Europa+%7C+Fira&amp;from_lat=41.356558916&amp;from_lng=2.124199344&amp;from_code=EU&amp;to_address=Sant+Josep&amp;to_lat=41.360700975&amp;to_lng=2.10991665&amp;to_code=SP&amp;datetime_option=0&amp;range_option=0&amp;date=01-11-2026&amp;time_from=20%3A59" target="_blank"><span>Vuelta trabajo</span><span class="tag">Fira → Sant Josep</span></a>
   <a class="btn" href="https://maps.app.goo.gl/AhRfHtg9DHJv5CPu5" target="_blank"><span>Vuelta metro</span><span class="tag">Google Maps</span></a>
 
-  <!-- 2. Único panel de autobús: San Sebastián -> Aeropuerto -->
+  <!-- 2. Autobús único: San Sebastián -> Aeropuerto BIO -->
   <h2>Autobús Lurraldebus (Línea DO050)</h2>
   <div class="card">
     <div class="tit" style="display:flex;justify-content:space-between;">
@@ -102,7 +102,6 @@ h2{font-size:0.95rem;color:#38bdf8;border-bottom:1px solid #334155;padding-botto
 </div>
 
 <script>
-// 1. Bus: únicamente San Sebastián -> Aeropuerto BIO
 function actBus(){
   const hVta = ["05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00"];
   const d = new Date();
@@ -116,7 +115,6 @@ function actBus(){
   }
 }
 
-// 2. Clima Open-Meteo
 const WMO={0:'Desp.',1:'Nub.',2:'Nub.',3:'Cub.',45:'Niebla',51:'Llov.',61:'Lluvia',80:'Chub.',95:'Torm.'};
 const DIAS=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
 
@@ -159,7 +157,6 @@ async function actClima(){
   }
 }
 
-// 3. Turnos Google Sheets
 const TURNOS={'M':{desc:'Mañana (06:00-14:00)',tipo:'mañana'},'T':{desc:'Tarde (14:00-22:00)',tipo:'tarde'},'Nn':{desc:'Noche (22:00-06:00)',tipo:'noche'},'Nnw':{desc:'Noche Finde',tipo:'noche-finde'}};
 
 async function actTurnos(){
