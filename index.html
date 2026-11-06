@@ -85,3 +85,129 @@ h2{font-size:0.95rem;color:#38bdf8;border-bottom:1px solid #334155;padding-botto
     <div class="grid-h" id="horas-bcn">
       <div class="c-item">+1h</div><div class="c-item">+2h</div><div class="c-item">+3h</div>
       <div class="c-item">+4h</div><div class="c-item">+5h</div><div class="c-item">+6h</div>
+    </div>
+  </div>
+
+  <!-- 4. Horario Laboral -->
+  <h2>Horario Laboral - Equipo E11</h2>
+  <div class="card" style="border-color:#38bdf8;text-align:center;">
+    <div style="font-size:0.7rem;color:#94a3b8;">TURNO DE HOY</div>
+    <div style="font-size:1.1rem;font-weight:bold;margin-top:3px;" id="turno-hoy">
+      <span class="badge libre">L</span> Libre / Descanso
+    </div>
+  </div>
+  <div id="lista-proximos">
+    <div class="fila-d"><span>Siguientes días</span><span class="badge libre">Sincronizando...</span></div>
+  </div>
+</div>
+
+<script>
+// 1. Bus: únicamente San Sebastián -> Aeropuerto BIO
+function actBus(){
+  const hVta = ["05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00"];
+  const d = new Date();
+  const act = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+
+  const s = hVta.filter(x => x >= act).slice(0, 3);
+  const el = document.getElementById('bus-vuelta');
+  if(el){
+    if(s.length) el.innerHTML = s.map((x, i) => `<div class="bus-item ${i === 0 ? 'sig' : ''}">${i === 0 ? 'Próx: ' : ''}${x} h</div>`).join('');
+    else el.innerHTML = `<span style="font-size:0.75rem;color:#94a3b8;">Finalizado por hoy. Mañana a las 05:00 h</span>`;
+  }
+}
+
+// 2. Clima Open-Meteo
+const WMO={0:'Desp.',1:'Nub.',2:'Nub.',3:'Cub.',45:'Niebla',51:'Llov.',61:'Lluvia',80:'Chub.',95:'Torm.'};
+const DIAS=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+
+async function actClima(){
+  const p=[{d:'prev-bio',h:'horas-bio',lat:43.3011,lon:-2.9106},{d:'prev-bcn',h:'horas-bcn',lat:41.2974,lon:2.0833}];
+  for(const x of p){
+    try{
+      const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${x.lat}&longitude=${x.lon}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum&hourly=temperature_2m,weather_code,precipitation&forecast_days=4&timezone=auto`);
+      if(!res.ok) continue;
+      const data = await res.json();
+      const elD = document.getElementById(x.d);
+      if(elD && data.daily){
+        elD.innerHTML = data.daily.time.map((f, i) => `
+          <div class="c-item">
+            <div style="color:#94a3b8;font-weight:bold;">${i===0?'Hoy':DIAS[new Date(f+'T00:00:00').getDay()]}</div>
+            <div style="font-size:0.65rem;">${WMO[data.daily.weather_code[i]]||'Var.'}</div>
+            <div><b>${Math.round(data.daily.temperature_2m_max[i])}°</b> <span style="color:#94a3b8;font-size:0.65rem;">${Math.round(data.daily.temperature_2m_min[i])}°</span></div>
+            <div style="color:#38bdf8;font-size:0.65rem;">💧${data.daily.precipitation_sum[i]}m</div>
+          </div>
+        `).join('');
+      }
+      const elH = document.getElementById(x.h);
+      if(elH && data.hourly){
+        const now = new Date();
+        let idx = data.hourly.time.findIndex(t => new Date(t) >= now);
+        if(idx === -1) idx = 0;
+        let str = '';
+        for(let i = idx; i < idx + 6 && i < data.hourly.time.length; i++){
+          str += `
+            <div class="c-item">
+              <div style="color:#94a3b8;font-weight:bold;">${data.hourly.time[i].substring(11,16)}</div>
+              <div><b>${Math.round(data.hourly.temperature_2m[i])}°</b></div>
+              <div style="color:#38bdf8;font-size:0.65rem;">${data.hourly.precipitation[i]>0?data.hourly.precipitation[i]+'m':'0m'}</div>
+            </div>
+          `;
+        }
+        elH.innerHTML = str;
+      }
+    }catch(e){}
+  }
+}
+
+// 3. Turnos Google Sheets
+const TURNOS={'M':{desc:'Mañana (06:00-14:00)',tipo:'mañana'},'T':{desc:'Tarde (14:00-22:00)',tipo:'tarde'},'Nn':{desc:'Noche (22:00-06:00)',tipo:'noche'},'Nnw':{desc:'Noche Finde',tipo:'noche-finde'}};
+
+async function actTurnos(){
+  try{
+    const res = await fetch('https://docs.google.com/spreadsheets/d/1LGStlL5X0kGPmwmVnB1OmcQdWe6uzrYUfzk54t-QZ28/export?format=csv');
+    if(!res.ok) return;
+    const txt = await res.text();
+    const rows = txt.trim().split('\n').slice(1);
+    const lista = rows.map(r => {
+      const c = r.split(',').map(x => x.replace(/^"|"$/g,'').trim());
+      const f = c[0];
+      if(!f) return null;
+      const p = f.split('/');
+      if(p.length !== 3) return null;
+      const cod = c[2] || '';
+      const inf = TURNOS[cod] || {desc:'Libre / Descanso',tipo:'libre'};
+      return {iso:`${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`,vis:f,dia:c[1]||'',cod:cod||'L',desc:inf.desc,tipo:inf.tipo};
+    }).filter(Boolean);
+
+    const hoy = new Date();
+    const pad = n => (n < 10 ? '0' : '') + n;
+    const hoyISO = `${hoy.getFullYear()}-${pad(hoy.getMonth() + 1)}-${pad(hoy.getDate())}`;
+
+    const tHoy = lista.find(t => t.iso === hoyISO);
+    const elHoy = document.getElementById('turno-hoy');
+    if(elHoy && tHoy) elHoy.innerHTML = `<span class="badge ${tHoy.tipo}">${tHoy.cod}</span> ${tHoy.desc}`;
+
+    const prox = lista.filter(t => t.iso > hoyISO).slice(0,5);
+    const elProx = document.getElementById('lista-proximos');
+    if(elProx && prox.length){
+      elProx.innerHTML = prox.map(t => `
+        <div class="fila-d">
+          <span>${t.dia} ${t.vis}</span>
+          <div>
+            <span style="font-size:0.75rem;color:#94a3b8;margin-right:4px;">${t.desc}</span>
+            <span class="badge ${t.tipo}">${t.cod}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+  }catch(e){}
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  actBus();
+  actClima();
+  actTurnos();
+});
+</script>
+</body>
+</html>
